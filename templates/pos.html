@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block title %}POS{% endblock %}
+{% block heading %}Point of Sale (Billing){% endblock %}
+
+{% block content %}
+<div class="row g-3">
+    <!-- Left: search + product list -->
+    <div class="col-lg-7">
+        <div class="table-card mb-3">
+            <form class="d-flex" method="get">
+                <input class="form-control me-2" type="search" name="q" autofocus
+                       placeholder="Search medicine by name or barcode..." value="{{ search }}">
+                <button class="btn btn-primary"><i class="bi bi-search"></i> Search</button>
+            </form>
+        </div>
+
+        {% if search %}
+        <div class="table-card">
+            <table class="table align-middle mb-0">
+                <thead><tr><th>Medicine</th><th>Price</th><th>Stock</th><th></th></tr></thead>
+                <tbody>
+                {% for m in medicines %}
+                    <tr>
+                        <td class="fw-semibold">{{ m.name }}
+                            {% if m.requires_prescription %}<span class="badge badge-soft-orange">Rx</span>{% endif %}</td>
+                        <td>Rs {{ "%.2f"|format(m.unit_price) }}</td>
+                        <td><span class="badge {{ 'badge-soft-red' if m.stock <= 0 else 'badge-soft-green' }}">{{ m.stock }}</span></td>
+                        <td class="text-end">
+                            {% if m.stock > 0 %}
+                            <a class="btn btn-sm btn-primary" href="{{ url_for('pos_add', mid=m.medicine_id) }}">
+                                <i class="bi bi-plus"></i> Add</a>
+                            {% else %}<span class="text-muted small">Out</span>{% endif %}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="4" class="text-center text-muted py-3">No results.</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="table-card text-center text-muted py-5">
+            <i class="bi bi-upc-scan" style="font-size:3rem;"></i>
+            <p class="mt-2">Search for a medicine to start a sale.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Right: cart -->
+    <div class="col-lg-5">
+        <div class="table-card">
+            <h6 class="fw-bold mb-3"><i class="bi bi-cart3"></i> Cart</h6>
+            {% if cart %}
+            <table class="table table-sm align-middle">
+                <thead><tr><th>Item</th><th>Qty</th><th class="text-end">Total</th><th></th></tr></thead>
+                <tbody>
+                {% for item in cart %}
+                    <tr>
+                        <td>{{ item.name }}<br><small class="text-muted">Rs {{ "%.2f"|format(item.unit_price) }}</small></td>
+                        <td>{{ item.quantity }}</td>
+                        <td class="text-end">Rs {{ "%.2f"|format(item.line_total) }}</td>
+                        <td class="text-end">
+                            <a class="btn btn-sm btn-outline-danger" href="{{ url_for('pos_remove', mid=item.medicine_id) }}">
+                                <i class="bi bi-x"></i></a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+            <form method="post" action="{{ url_for('pos_checkout') }}">
+                <div class="mb-2"><label class="form-label">Customer (optional)</label>
+                    <select class="form-select" name="customer_id">
+                        <option value="0">Walk-in customer</option>
+                        {% for c in customers %}<option value="{{ c.customer_id }}">{{ c.name }}</option>{% endfor %}
+                    </select></div>
+                <div class="row">
+                    <div class="col-6 mb-2"><label class="form-label">Discount %</label>
+                        <input class="form-control" type="number" step="0.1" name="discount_pct" value="0"></div>
+                    <div class="col-6 mb-2"><label class="form-label">Tax %</label>
+                        <input class="form-control" type="number" step="0.1" name="tax_pct" value="{{ tax_pct }}"></div>
+                </div>
+                <div class="d-flex justify-content-between border-top pt-2 mt-2">
+                    <span class="fw-bold">Subtotal</span>
+                    <span class="fw-bold">Rs {{ "%.2f"|format(subtotal) }}</span>
+                </div>
+                <div class="d-grid gap-2 mt-3">
+                    <button class="btn btn-success"><i class="bi bi-check-circle"></i> Checkout & Print Invoice</button>
+                    <a class="btn btn-outline-secondary btn-sm" href="{{ url_for('pos_clear') }}">Clear Cart</a>
+                </div>
+                <p class="small text-muted mt-2 mb-0"><i class="bi bi-shield-check"></i>
+                    Checkout runs as a transaction. Stock is auto-deducted by a trigger (FIFO by expiry).</p>
+            </form>
+            {% else %}
+            <p class="text-muted text-center py-4">Cart is empty.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

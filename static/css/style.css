@@ -1,0 +1,161 @@
+/* ============================================================
+   Smart Pharmacy Management System - Custom styling
+   (Layered on top of Bootstrap 5)
+   ============================================================ */
+
+:root {
+    --pharm-primary: #1565c0;
+    --pharm-primary-dark: #0d47a1;
+    --pharm-accent: #00bfa5;
+    --pharm-bg: #f4f7fb;
+}
+
+body {
+    background: var(--pharm-bg);
+    font-family: "Segoe UI", Roboto, system-ui, sans-serif;
+    color: #2b2f33;
+}
+
+/* ---------- Sidebar ---------- */
+.sidebar {
+    background: linear-gradient(180deg, var(--pharm-primary-dark), var(--pharm-primary));
+    min-height: 100vh;
+    color: #fff;
+    width: 240px;
+    position: fixed;
+    top: 0; left: 0;
+    padding-top: 1rem;
+    box-shadow: 2px 0 12px rgba(0,0,0,.12);
+}
+.sidebar .brand {
+    font-size: 1.25rem;
+    font-weight: 700;
+    padding: .5rem 1.25rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    border-bottom: 1px solid rgba(255,255,255,.15);
+}
+.sidebar .nav-link {
+    color: rgba(255,255,255,.85);
+    padding: .65rem 1.25rem;
+    border-radius: 8px;
+    margin: 2px 10px;
+    display: flex;
+    align-items: center;
+    gap: .65rem;
+    transition: all .15s ease;
+}
+.sidebar .nav-link:hover {
+    background: rgba(255,255,255,.15);
+    color: #fff;
+}
+.sidebar .nav-link.active {
+    background: #fff;
+    color: var(--pharm-primary-dark);
+    font-weight: 600;
+}
+.sidebar .nav-section {
+    font-size: .72rem;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: rgba(255,255,255,.55);
+    padding: 1rem 1.5rem .25rem;
+}
+
+/* ---------- Main content ---------- */
+.main {
+    margin-left: 240px;
+    padding: 1.5rem 2rem;
+}
+.topbar {
+    background: #fff;
+    border-radius: 12px;
+    padding: .85rem 1.25rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,.05);
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.page-title { font-weight: 700; margin: 0; color: var(--pharm-primary-dark); }
+
+/* ---------- Cards & stats ---------- */
+.card {
+    border: none;
+    border-radius: 14px;
+    box-shadow: 0 2px 10px rgba(0,0,0,.06);
+}
+.stat-card {
+    border-radius: 14px;
+    color: #fff;
+    padding: 1.25rem;
+    position: relative;
+    overflow: hidden;
+}
+.stat-card .stat-icon {
+    position: absolute;
+    right: 1rem; top: 1rem;
+    font-size: 2.4rem;
+    opacity: .25;
+}
+.stat-card .stat-value { font-size: 1.9rem; font-weight: 700; }
+.stat-card .stat-label { opacity: .9; font-size: .9rem; }
+.bg-grad-blue  { background: linear-gradient(135deg, #1565c0, #42a5f5); }
+.bg-grad-green { background: linear-gradient(135deg, #00897b, #4db6ac); }
+.bg-grad-orange{ background: linear-gradient(135deg, #ef6c00, #ffb74d); }
+.bg-grad-purple{ background: linear-gradient(135deg, #6a1b9a, #ba68c8); }
+.bg-grad-red   { background: linear-gradient(135deg, #c62828, #ef5350); }
+
+/* ---------- Tables ---------- */
+.table-card { background:#fff; border-radius:14px; padding:1.25rem;
+              box-shadow:0 2px 10px rgba(0,0,0,.06); }
+.table thead th {
+    background: #eef3fb;
+    color: var(--pharm-primary-dark);
+    font-size: .82rem;
+    text-transform: uppercase;
+    letter-spacing: .03em;
+    border: none;
+}
+.table tbody tr:hover { background: #f6f9ff; }
+
+/* ---------- Buttons ---------- */
+.btn-primary {
+    background: var(--pharm-primary);
+    border-color: var(--pharm-primary);
+}
+.btn-primary:hover { background: var(--pharm-primary-dark); border-color: var(--pharm-primary-dark); }
+
+/* ---------- Login page ---------- */
+.login-wrap {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--pharm-primary-dark), var(--pharm-accent));
+}
+.login-card {
+    background: #fff;
+    border-radius: 18px;
+    padding: 2.5rem;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 12px 40px rgba(0,0,0,.25);
+}
+.login-card .logo {
+    font-size: 2.5rem;
+    color: var(--pharm-primary);
+    text-align: center;
+}
+
+/* ---------- Misc ---------- */
+.badge-soft-red    { background:#fde8e8; color:#c62828; }
+.badge-soft-orange { background:#fff3e0; color:#ef6c00; }
+.badge-soft-green  { background:#e6f4ea; color:#2e7d32; }
+.badge-soft-blue   { background:#e3f2fd; color:#1565c0; }
+
+@media print {
+    .sidebar, .topbar, .no-print { display: none !important; }
+    .main { margin-left: 0; }
+}

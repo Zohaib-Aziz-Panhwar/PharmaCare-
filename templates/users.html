@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Users & Logs{% endblock %}
+{% block heading %}Users & Activity Logs{% endblock %}
+
+{% block content %}
+<div class="row g-3">
+    <!-- Users -->
+    <div class="col-lg-7">
+        <div class="table-card">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="fw-bold mb-0"><i class="bi bi-people"></i> System Users</h6>
+                <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addUser">
+                    <i class="bi bi-plus-lg"></i> Add User</button>
+            </div>
+            <table class="table align-middle">
+                <thead><tr><th>Username</th><th>Full Name</th><th>Role</th><th class="text-end">Actions</th></tr></thead>
+                <tbody>
+                {% for u in users %}
+                    <tr>
+                        <td class="fw-semibold">{{ u.username }}</td>
+                        <td>{{ u.full_name }}</td>
+                        <td><span class="badge badge-soft-blue">{{ u.role }}</span></td>
+                        <td class="text-end">
+                            <a class="btn btn-sm btn-outline-danger" href="{{ url_for('delete_user', uid=u.user_id) }}"
+                               onclick="return confirm('Delete user?')"><i class="bi bi-trash"></i></a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Activity log -->
+    <div class="col-lg-5">
+        <div class="table-card">
+            <h6 class="fw-bold mb-3"><i class="bi bi-clock-history"></i> Activity Log (audit trail)</h6>
+            <table class="table table-sm">
+                <thead><tr><th>User</th><th>Action</th><th>Time</th></tr></thead>
+                <tbody>
+                {% for l in logs %}
+                    <tr><td>{{ l.username or '-' }}</td><td><small>{{ l.action }}</small></td>
+                        <td><small>{{ l.created_at }}</small></td></tr>
+                {% else %}<tr><td colspan="3" class="text-muted text-center">No activity yet.</td></tr>{% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addUser" tabindex="-1">
+  <div class="modal-dialog"><div class="modal-content">
+    <form method="post" action="{{ url_for('add_user') }}">
+      <div class="modal-header"><h5 class="modal-title">Add User</h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body">
+        <div class="mb-2"><label class="form-label">Full Name *</label>
+            <input class="form-control" name="full_name" required></div>
+        <div class="mb-2"><label class="form-label">Username *</label>
+            <input class="form-control" name="username" required></div>
+        <div class="mb-2"><label class="form-label">Password *</label>
+            <input class="form-control" type="text" name="password" required></div>
+        <div class="mb-2"><label class="form-label">Role *</label>
+          <select class="form-select" name="role" required>
+            <option value="Cashier">Cashier</option>
+            <option value="Pharmacist">Pharmacist</option>
+            <option value="Admin">Admin</option>
+          </select></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-primary">Add</button></div>
+    </form>
+  </div></div>
+</div>
+{% endblock %}

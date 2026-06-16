@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Prescriptions{% endblock %}
+{% block heading %}Prescriptions{% endblock %}
+
+{% block content %}
+<!-- Refill reminders -->
+{% if reminders %}
+<div class="alert alert-warning">
+    <strong><i class="bi bi-bell"></i> Refill Reminders:</strong>
+    {% for r in reminders %}
+        <span class="badge bg-warning text-dark me-1">
+            {{ r.customer_name }} — due in {{ r.days_left }}d ({{ r.next_refill_date }})</span>
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="d-flex justify-content-end mb-3">
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addRx">
+        <i class="bi bi-plus-lg"></i> New Prescription</button>
+</div>
+
+<div class="table-card">
+<table class="table align-middle">
+    <thead><tr><th>#</th><th>Customer</th><th>Doctor</th><th>Date</th><th>Notes</th><th>Chronic</th><th>Next Refill</th><th class="text-end">Actions</th></tr></thead>
+    <tbody>
+    {% for p in prescriptions %}
+        <tr>
+            <td>{{ p.prescription_id }}</td>
+            <td class="fw-semibold">{{ p.customer_name }}</td>
+            <td>{{ p.doctor_name or '-' }}</td>
+            <td>{{ p.prescription_date }}</td>
+            <td><small>{{ p.notes or '-' }}</small></td>
+            <td>{% if p.is_chronic %}<span class="badge badge-soft-blue">Chronic</span>{% else %}-{% endif %}</td>
+            <td>{{ p.next_refill_date or '-' }}</td>
+            <td class="text-end">
+                <a class="btn btn-sm btn-outline-danger" href="{{ url_for('delete_prescription', pid=p.prescription_id) }}"
+                   onclick="return confirm('Delete prescription?')"><i class="bi bi-trash"></i></a></td>
+        </tr>
+    {% else %}
+        <tr><td colspan="8" class="text-center text-muted py-4">No prescriptions yet.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+
+<div class="modal fade" id="addRx" tabindex="-1">
+  <div class="modal-dialog"><div class="modal-content">
+    <form method="post" action="{{ url_for('add_prescription') }}">
+      <div class="modal-header"><h5 class="modal-title">New Prescription</h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body">
+        <div class="mb-2"><label class="form-label">Customer *</label>
+          <select class="form-select" name="customer_id" required>
+            <option value="">-- select --</option>
+            {% for c in customers %}<option value="{{ c.customer_id }}">{{ c.name }}</option>{% endfor %}
+          </select></div>
+        <div class="mb-2"><label class="form-label">Doctor</label>
+          <select class="form-select" name="doctor_id">
+            <option value="">-- none --</option>
+            {% for d in doctors %}<option value="{{ d.doctor_id }}">{{ d.name }}</option>{% endfor %}
+          </select></div>
+        <div class="mb-2"><label class="form-label">Prescription Date *</label>
+            <input class="form-control" type="date" name="prescription_date" value="{{ today }}" required></div>
+        <div class="mb-2"><label class="form-label">Notes</label>
+            <textarea class="form-control" name="notes" rows="2"></textarea></div>
+        <div class="form-check mb-2">
+            <input class="form-check-input" type="checkbox" name="is_chronic" id="chronic">
+            <label class="form-check-label" for="chronic">Chronic medication (enable refill reminders)</label></div>
+        <div class="mb-2"><label class="form-label">Next Refill Date</label>
+            <input class="form-control" type="date" name="next_refill_date"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-primary">Save</button></div>
+    </form>
+  </div></div>
+</div>
+{% endblock %}

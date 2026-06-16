@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Reports{% endblock %}
+{% block heading %}Sales Reports & Analytics{% endblock %}
+
+{% block content %}
+<div class="row g-3 mb-4">
+    <div class="col-md-6">
+        <div class="stat-card bg-grad-blue">
+            <i class="bi bi-receipt stat-icon"></i>
+            <div class="stat-value">{{ totals.bills }}</div>
+            <div class="stat-label">Total Bills</div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="stat-card bg-grad-green">
+            <i class="bi bi-cash-stack stat-icon"></i>
+            <div class="stat-value">Rs {{ "%.0f"|format(totals.revenue) }}</div>
+            <div class="stat-label">Total Revenue</div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <!-- Daily report -->
+    <div class="col-lg-4">
+        <div class="table-card h-100">
+            <h6 class="fw-bold mb-3"><i class="bi bi-calendar-day"></i> Daily Sales (last 14)</h6>
+            <table class="table table-sm">
+                <thead><tr><th>Date</th><th>Bills</th><th class="text-end">Revenue</th></tr></thead>
+                <tbody>
+                {% for d in daily %}
+                    <tr><td>{{ d.d }}</td><td>{{ d.bills }}</td>
+                        <td class="text-end">Rs {{ "%.0f"|format(d.revenue) }}</td></tr>
+                {% else %}<tr><td colspan="3" class="text-muted text-center">No data</td></tr>{% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Monthly report -->
+    <div class="col-lg-4">
+        <div class="table-card h-100">
+            <h6 class="fw-bold mb-3"><i class="bi bi-calendar-month"></i> Monthly Sales</h6>
+            <table class="table table-sm">
+                <thead><tr><th>Month</th><th>Bills</th><th class="text-end">Revenue</th></tr></thead>
+                <tbody>
+                {% for m in monthly %}
+                    <tr><td>{{ m.m }}</td><td>{{ m.bills }}</td>
+                        <td class="text-end">Rs {{ "%.0f"|format(m.revenue) }}</td></tr>
+                {% else %}<tr><td colspan="3" class="text-muted text-center">No data</td></tr>{% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Top medicines -->
+    <div class="col-lg-4">
+        <div class="table-card h-100">
+            <h6 class="fw-bold mb-3"><i class="bi bi-trophy"></i> Top-Selling Medicines</h6>
+            <table class="table table-sm">
+                <thead><tr><th>Medicine</th><th>Qty</th><th class="text-end">Revenue</th></tr></thead>
+                <tbody>
+                {% for t in top_meds %}
+                    <tr><td>{{ t.name }}</td><td>{{ t.qty }}</td>
+                        <td class="text-end">Rs {{ "%.0f"|format(t.revenue) }}</td></tr>
+                {% else %}<tr><td colspan="3" class="text-muted text-center">No data</td></tr>{% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

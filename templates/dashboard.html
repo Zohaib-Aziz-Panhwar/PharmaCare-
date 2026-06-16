@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block heading %}Dashboard{% endblock %}
+
+{% block content %}
+<!-- Stat cards -->
+<div class="row g-3 mb-4">
+    <div class="col-md-3 col-sm-6">
+        <div class="stat-card bg-grad-blue">
+            <i class="bi bi-capsule stat-icon"></i>
+            <div class="stat-value">{{ stats.medicines }}</div>
+            <div class="stat-label">Medicines</div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="stat-card bg-grad-green">
+            <i class="bi bi-people stat-icon"></i>
+            <div class="stat-value">{{ stats.customers }}</div>
+            <div class="stat-label">Customers</div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="stat-card bg-grad-orange">
+            <i class="bi bi-receipt stat-icon"></i>
+            <div class="stat-value">{{ stats.sales_today }}</div>
+            <div class="stat-label">Sales Today</div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="stat-card bg-grad-purple">
+            <i class="bi bi-cash-stack stat-icon"></i>
+            <div class="stat-value">Rs {{ "%.0f"|format(stats.revenue_today) }}</div>
+            <div class="stat-label">Revenue Today</div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <!-- Low stock -->
+    <div class="col-lg-4">
+        <div class="table-card h-100">
+            <h6 class="fw-bold mb-3"><i class="bi bi-exclamation-triangle text-danger"></i> Low Stock</h6>
+            {% if low_stock %}
+            <table class="table table-sm">
+                <thead><tr><th>Medicine</th><th class="text-end">Stock</th></tr></thead>
+                <tbody>
+                {% for m in low_stock %}
+                    <tr><td>{{ m.name }}</td>
+                        <td class="text-end"><span class="badge badge-soft-red">{{ m.total_stock }}</span></td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% else %}<p class="text-muted small">All medicines are well stocked.</p>{% endif %}
+        </div>
+    </div>
+
+    <!-- Expiring soon -->
+    <div class="col-lg-4">
+        <div class="table-card h-100">
+            <h6 class="fw-bold mb-3"><i class="bi bi-calendar-x text-warning"></i> Expiring Soon</h6>
+            {% if expiring %}
+            <table class="table table-sm">
+                <thead><tr><th>Medicine</th><th class="text-end">Days left</th></tr></thead>
+                <tbody>
+                {% for e in expiring %}
+                    <tr><td>{{ e.medicine_name }}<br><small class="text-muted">{{ e.batch_number }}</small></td>
+                        <td class="text-end">
+                          <span class="badge {{ 'badge-soft-red' if e.days_left < 30 else 'badge-soft-orange' }}">
+                            {{ e.days_left }}d</span></td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% else %}<p class="text-muted small">Nothing expiring in 90 days.</p>{% endif %}
+        </div>
+    </div>
+
+    <!-- Top selling -->
+    <div class="col-lg-4">
+        <div class="table-card h-100">
+            <h6 class="fw-bold mb-3"><i class="bi bi-trophy text-success"></i> Top Selling</h6>
+            {% if top_meds %}
+            <table class="table table-sm">
+                <thead><tr><th>Medicine</th><th class="text-end">Sold</th></tr></thead>
+                <tbody>
+                {% for t in top_meds %}
+                    <tr><td>{{ t.name }}</td>
+                        <td class="text-end"><span class="badge badge-soft-green">{{ t.qty }}</span></td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% else %}<p class="text-muted small">No sales recorded yet.</p>{% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="mt-4">
+    <a href="{{ url_for('pos') }}" class="btn btn-primary"><i class="bi bi-cart3"></i> New Sale</a>
+    <a href="{{ url_for('batches') }}" class="btn btn-outline-primary"><i class="bi bi-box-seam"></i> Add Stock</a>
+    <a href="{{ url_for('alerts') }}" class="btn btn-outline-warning"><i class="bi bi-bell"></i> View Alerts</a>
+</div>
+{% endblock %}

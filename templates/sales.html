@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Sales History{% endblock %}
+{% block heading %}Sales History{% endblock %}
+
+{% block content %}
+<div class="table-card">
+<table class="table align-middle">
+    <thead><tr>
+        <th>Invoice #</th><th>Date</th><th>Customer</th><th>Cashier</th>
+        <th>Subtotal</th><th>Discount</th><th>Tax</th><th>Total</th><th></th>
+    </tr></thead>
+    <tbody>
+    {% for s in sales %}
+        <tr>
+            <td class="fw-semibold">#{{ s.sale_id }}</td>
+            <td>{{ s.sale_date }}</td>
+            <td>{{ s.customer_name or 'Walk-in' }}</td>
+            <td>{{ s.cashier or '-' }}</td>
+            <td>Rs {{ "%.2f"|format(s.subtotal) }}</td>
+            <td>Rs {{ "%.2f"|format(s.discount) }}</td>
+            <td>Rs {{ "%.2f"|format(s.tax) }}</td>
+            <td class="fw-bold">Rs {{ "%.2f"|format(s.total) }}</td>
+            <td class="text-end">
+                <a class="btn btn-sm btn-outline-primary" href="{{ url_for('invoice', sale_id=s.sale_id) }}">
+                    <i class="bi bi-receipt"></i> View</a></td>
+        </tr>
+    {% else %}
+        <tr><td colspan="9" class="text-center text-muted py-4">No sales yet.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+{% endblock %}

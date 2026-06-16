@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Invoice #{{ sale.sale_id }}{% endblock %}
+{% block heading %}Invoice #{{ sale.sale_id }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-end gap-2 mb-3 no-print">
+    <button class="btn btn-primary" onclick="window.print()"><i class="bi bi-printer"></i> Print</button>
+    <a class="btn btn-outline-primary" href="{{ url_for('pos') }}"><i class="bi bi-cart3"></i> New Sale</a>
+</div>
+
+<div class="table-card" style="max-width:720px; margin:auto;">
+    <div class="text-center mb-3">
+        <h3 class="fw-bold text-primary"><i class="bi bi-capsule-pill"></i> PharmaCare</h3>
+        <p class="text-muted mb-0">Smart Pharmacy Management System</p>
+        <hr>
+    </div>
+    <div class="row mb-3">
+        <div class="col-6">
+            <strong>Invoice #:</strong> {{ sale.sale_id }}<br>
+            <strong>Date:</strong> {{ sale.sale_date }}<br>
+        </div>
+        <div class="col-6 text-end">
+            <strong>Customer:</strong> {{ sale.customer_name or 'Walk-in' }}<br>
+            <strong>Cashier:</strong> {{ sale.cashier or '-' }}<br>
+        </div>
+    </div>
+
+    <table class="table">
+        <thead><tr><th>#</th><th>Medicine</th><th>Batch</th><th>Qty</th><th>Price</th><th class="text-end">Total</th></tr></thead>
+        <tbody>
+        {% for it in items %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ it.medicine_name }}</td>
+                <td>{{ it.batch_number }}</td>
+                <td>{{ it.quantity }}</td>
+                <td>Rs {{ "%.2f"|format(it.unit_price) }}</td>
+                <td class="text-end">Rs {{ "%.2f"|format(it.line_total) }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="d-flex justify-content-end">
+        <table class="table table-sm" style="max-width:280px;">
+            <tr><td>Subtotal</td><td class="text-end">Rs {{ "%.2f"|format(sale.subtotal) }}</td></tr>
+            <tr><td>Discount</td><td class="text-end">- Rs {{ "%.2f"|format(sale.discount) }}</td></tr>
+            <tr><td>Tax</td><td class="text-end">Rs {{ "%.2f"|format(sale.tax) }}</td></tr>
+            <tr class="fw-bold border-top"><td>Grand Total</td>
+                <td class="text-end">Rs {{ "%.2f"|format(sale.total) }}</td></tr>
+        </table>
+    </div>
+
+    <p class="text-center text-muted small mt-3">Thank you for your purchase! Get well soon.</p>
+</div>
+{% endblock %}
